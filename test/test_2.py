@@ -1,5 +1,5 @@
 from pytest import mark
-from src.day_2 import count_safe_reports, is_safe
+from src.day_2 import count_safe_reports, is_safe, is_safe_2
 
 
 class Testis_safe:
@@ -31,4 +31,7 @@ class Testis_safe:
 
 class Testpuzzles:
     def test_1(self):
-        assert count_safe_reports() == 213
+        assert count_safe_reports(is_safe) == 213
+
+    def test_2(self):
+        assert count_safe_reports(is_safe_2) == 285
