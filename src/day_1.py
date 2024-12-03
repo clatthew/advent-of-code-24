@@ -1,11 +1,8 @@
-def read_input(filepath="input/1.txt"):
-    with open(filepath, "r") as f:
-        for line in f:
-            yield line.split()
+from src.read_input import read_input
 
 
 def get_lists():
-    lines = [line for line in read_input()]
+    lines = [line for line in read_input(1)]
     l_list = sorted(int(line[0]) for line in lines)
     r_list = sorted(int(line[1]) for line in lines)
     return l_list, r_list
