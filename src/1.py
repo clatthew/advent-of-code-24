@@ -15,5 +15,16 @@ def compare_lists(l_list, r_list):
     return sum(abs(a - b) for a, b in zip(l_list, r_list))
 
 
+def generate_similarity_score(l_list, r_list):
+    similarity_dict = {i: 0 for i in l_list}
+    for i in r_list:
+        try:
+            similarity_dict[i] += 1
+        except KeyError:
+            continue
+    return sum([key * val for key, val in similarity_dict.items()])
+
+
 if __name__ == "__main__":
     print(compare_lists(*get_lists()))
+    print(generate_similarity_score(*get_lists()))
