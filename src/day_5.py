@@ -41,18 +41,22 @@ def get_check_update_fail_return_val(rearrange, update, i, condition):
         return 0
 
 
+def middle_val(update):
+    return update[int(len(update) / 2)]
+
+
 def check_update(update, conditions, rearrange=False):
     for i, page in enumerate(update):
         for condition in conditions[page]:
             if condition in update and condition not in update[:i]:
                 return get_check_update_fail_return_val(rearrange, update, i, condition)
-    return update[int(len(update) / 2)]
+    return middle_val(update)
 
 
 def fix_update(update: list, conditions: dict):
     while not check_update(update, conditions):
         update = check_update(update, conditions, True)
-    return update[int(len(update) / 2)]
+    return middle_val(update)
 
 
 def tasks(input_func=extract_input, score_func=check_update):
