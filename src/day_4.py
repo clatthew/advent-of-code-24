@@ -13,10 +13,14 @@ class Vector:
         return Vector(self.x - other.x, self.y - other.y)
 
     def __str__(self):
-        return f"[{self.x}, {self.y}]"
+        return str(self.as_tuple)
+
+    @property
+    def as_tuple(self) -> tuple:
+        return (self.x, self.y)
 
     def __eq__(self, other: Self) -> bool:
-        return self.x == other.x and self.y == other.y
+        return self.as_tuple == other.as_tuple
 
     @property
     def is_negative(self):
