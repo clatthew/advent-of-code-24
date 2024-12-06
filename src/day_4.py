@@ -26,6 +26,18 @@ class Vector:
         return matrix[self.y][self.x]
 
 
+unit_vectors = {
+    0: Vector(1, 0),
+    1: Vector(1, 1),
+    2: Vector(0, 1),
+    3: Vector(-1, 1),
+    4: Vector(-1, 0),
+    5: Vector(-1, -1),
+    6: Vector(0, -1),
+    7: Vector(1, -1),
+}
+
+
 def read_file(filepath: str):
     with open(filepath, "r") as f:
         yield from f
@@ -41,23 +53,13 @@ def get_matrix(filepath: str = "input/4.txt"):
 def follow_direction(
     matrix: list[list[str]], start_point: Vector, direction: int, word_length: int = 4
 ) -> list:
-    increments = {
-        0: Vector(1, 0),
-        1: Vector(1, 1),
-        2: Vector(0, 1),
-        3: Vector(-1, 1),
-        4: Vector(-1, 0),
-        5: Vector(-1, -1),
-        6: Vector(0, -1),
-        7: Vector(1, -1),
-    }
     word = ""
     for _ in range(word_length):
         if start_point.is_negative:
             return None
         try:
             word += start_point.index(matrix)
-            start_point += increments[direction]
+            start_point += unit_vectors[direction]
         except IndexError:
             return None
     return word
