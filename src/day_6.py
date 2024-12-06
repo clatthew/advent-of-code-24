@@ -20,22 +20,15 @@ def get_start_pos(map: list[list]) -> Vector | None:
 def next_cell(map: list[list], current_position: Vector, current_direction: int) -> str:
     next_cell = current_position + unit_vectors[current_direction]
     if next_cell.is_inside_of(map):
-        return (next_cell).index(map)
-    return False
+        return next_cell.index(map)
+    raise IndexError
 
 
 def get_next_position(
     map: list[list], current_position: Vector, current_direction: int
 ) -> Vector:
-    moved = False
-    while not moved:
-        next_pos_candidate = next_cell(map, current_position, current_direction)
-        if not next_pos_candidate:
-            raise IndexError
-        if next_pos_candidate == "#":
-            current_direction = (current_direction + 1) % 4
-        else:
-            moved = True
+    while next_cell(map, current_position, current_direction) == "#":
+        current_direction = (current_direction + 1) % 4
     return current_position + unit_vectors[current_direction], current_direction
 
 
