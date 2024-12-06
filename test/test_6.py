@@ -1,5 +1,11 @@
-from src.day_6 import task_1, get_start_pos, task_2, get_next_position
-from src.day_4 import Vector, get_matrix
+from src.day_6 import (
+    task_1,
+    get_start_pos,
+    task_2,
+    get_next_position,
+    Vector,
+    get_matrix,
+)
 from pytest import mark
 
 
