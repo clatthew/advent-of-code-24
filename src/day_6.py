@@ -40,7 +40,7 @@ def places_visited(map: list[list]) -> dict:
     current_direction: int = 3
     places_visited = {}
     steps = 0
-    while current_position.is_inside_of(map):
+    while True:
         try:
             current_position, current_direction = get_next_position(
                 map, current_position, current_direction
