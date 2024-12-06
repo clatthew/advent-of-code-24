@@ -1,34 +1,37 @@
+from typing import Self
+
+
 class Vector:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
-    def __add__(self, other):
+    def __add__(self, other: Self) -> Self:
         return Vector(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other):
+    def __sub__(self, other: Self) -> Self:
         return Vector(self.x - other.x, self.y - other.y)
 
     def __str__(self):
         return f"[{self.x}, {self.y}]"
 
-    def __eq__(self, other):
+    def __eq__(self, other: Self) -> bool:
         return self.x == other.x and self.y == other.y
 
     @property
     def is_negative(self):
         return self.x < 0 or self.y < 0
 
-    def index(self, matrix):
+    def index(self, matrix: list[list]):
         return matrix[self.y][self.x]
 
 
-def read_file(filepath):
+def read_file(filepath: str):
     with open(filepath, "r") as f:
         yield from f
 
 
-def get_matrix(filepath="input/4.txt"):
+def get_matrix(filepath: str = "input/4.txt"):
     matrix = []
     for line in read_file(filepath):
         matrix.append(list(line))
@@ -60,7 +63,9 @@ def follow_direction(
     return word
 
 
-def search_word_from_letter(matrix, start_point, target="XMAS"):
+def search_word_from_letter(
+    matrix: list[list[str]], start_point: Vector, target: str = "XMAS"
+):
     count = 0
     for direction in range(8):
         if follow_direction(matrix, start_point, direction) == target:
