@@ -27,13 +27,13 @@ def forward_cell_content(
 
 def get_next_position(
     map: list[list], current_position: Vector, current_direction: int
-) -> Vector:
+) -> tuple[Vector, int]:
     while forward_cell_content(map, current_position, current_direction) == "#":
         current_direction = (current_direction + 1) % 4
     return current_position + unit_vectors[current_direction], current_direction
 
 
-def places_visited(map: list[list]) -> list[tuple]:
+def places_visited(map: list[list]) -> list[tuple[int, int]]:
     current_position: Vector = get_start_pos(map)
     current_direction: int = 3
     visits = {}
@@ -53,11 +53,11 @@ def places_visited(map: list[list]) -> list[tuple]:
     return list(visits)
 
 
-def task_1(map: list[list] = get_matrix("input/6.txt")):
+def task_1(map: list[list] = get_matrix("input/6.txt")) -> int:
     return len(places_visited(map)) - 1
 
 
-def task_2(map: list[list] = get_matrix("input/6.txt")):
+def task_2(map: list[list] = get_matrix("input/6.txt")) -> int:
     guard_positions = places_visited(map)
     guard_positions.remove(get_start_pos(map).as_tuple)
     loop_positions = 0
