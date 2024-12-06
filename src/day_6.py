@@ -31,15 +31,10 @@ def get_next_position(
     return current_position + unit_vectors[current_direction], current_direction
 
 
-def is_periodic(visits: list):
-    return len(visits) > 4
-
-
-def places_visited(map: list[list]) -> dict:
+def places_visited(map: list[list]) -> list[tuple]:
     current_position: Vector = get_start_pos(map)
     current_direction: int = 3
-    places_visited = {}
-    steps = 0
+    visits = {}
     while True:
         try:
             current_position, current_direction = get_next_position(
@@ -47,14 +42,13 @@ def places_visited(map: list[list]) -> dict:
             )
         except IndexError:
             break
-        if current_position.as_tuple not in places_visited:
-            places_visited[current_position.as_tuple] = [steps]
+        if current_position.as_tuple not in visits:
+            visits[current_position.as_tuple] = 1
         else:
-            places_visited[current_position.as_tuple].append(steps)
-            if is_periodic(places_visited[current_position.as_tuple]):
+            visits[current_position.as_tuple] += 1
+            if visits[current_position.as_tuple] > 4:
                 raise Periodic
-        steps += 1
-    return places_visited
+    return list(visits)
 
 
 def task_1(map: list[list] = get_matrix("input/6.txt")):
@@ -63,7 +57,7 @@ def task_1(map: list[list] = get_matrix("input/6.txt")):
 
 def task_2(map: list[list] = get_matrix("input/6.txt")):
     guard_positions = places_visited(map)
-    del guard_positions[get_start_pos(map).as_tuple]
+    guard_positions.remove(get_start_pos(map).as_tuple)
     loop_positions = 0
     for position in guard_positions:
         modified_map = deepcopy(map)
