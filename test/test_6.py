@@ -35,7 +35,6 @@ class Testtasks:
     def test_3(self):
         assert task_1() == 5269
 
-    @mark.skip
     @mark.it("Solution to task 2 returns the correct answer")
     def test_4(self):
-        assert task_2()
+        assert task_2() == 1957

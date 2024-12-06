@@ -1,8 +1,14 @@
-from src.day_4 import Vector, get_matrix, unit_vectors, follow_direction
+from src.day_4 import Vector, get_matrix, unit_vectors
+from copy import deepcopy
 
 unit_vectors = {
     int(key / 2): value for key, value in unit_vectors.items() if key % 2 == 0
 }
+
+
+def str_to_Vector(vector: str):
+    vector_list = [int(i) for i in vector[1:-1].split(",")]
+    return Vector(vector_list[0], vector_list[1])
 
 
 def get_start_pos(map: list[list]) -> Vector | None:
@@ -12,101 +18,69 @@ def get_start_pos(map: list[list]) -> Vector | None:
 
 
 def next_cell(map: list[list], current_position: Vector, current_direction: int) -> str:
-    return (current_position + unit_vectors[current_direction]).index(map)
+    next_cell = current_position + unit_vectors[current_direction]
+    if next_cell.is_inside_of(map):
+        return (next_cell).index(map)
+    return False
 
 
 def get_next_position(
     map: list[list], current_position: Vector, current_direction: int
 ) -> Vector:
-    while next_cell(map, current_position, current_direction) == "#":
-        current_direction = (current_direction + 1) % 4
+    moved = False
+    while not moved:
+        next_pos_candidate = next_cell(map, current_position, current_direction)
+        if not next_pos_candidate:
+            raise IndexError
+        if next_pos_candidate == "#":
+            current_direction = (current_direction + 1) % 4
+        else:
+            moved = True
     return current_position + unit_vectors[current_direction], current_direction
 
 
-def places_visited():
-    map = get_matrix("input/6.txt")
+def is_periodic(visits: list):
+    return len(visits) > 4
+
+
+def places_visited(map: list[list]) -> dict:
     current_position: Vector = get_start_pos(map)
     current_direction: int = 3
-    places_visited: int = []
-    while True:
-        if current_position.index(map) != "X":
-            places_visited.append(current_position)
-            current_position.set_value(map, "X")
+    places_visited = {}
+    steps = 0
+    periodic = False
+    while current_position.is_inside_of(map):
         try:
             current_position, current_direction = get_next_position(
                 map, current_position, current_direction
             )
         except IndexError:
             break
-    return places_visited[1:]
+        if str(current_position) not in places_visited:
+            places_visited[str(current_position)] = [steps]
+        else:
+            places_visited[str(current_position)].append(steps)
+            if is_periodic(places_visited[str(current_position)]):
+                periodic = True
+                break
+        steps += 1
+    if periodic:
+        return "periodic"
+    return places_visited
 
 
-def task_1():
-    return len(places_visited())
+def task_1(map=get_matrix("input/6.txt")):
+    return len(places_visited(map)) - 1
 
 
-def width_and_lenth_candidates(map: list[list], position: Vector):
-    max_width = len(map[position.y]) - position.x
-    horizontal_cells = follow_direction(map, position + Vector(0, 1), 0, max_width)
-    try:
-        width = horizontal_cells.index("#")
-    except ValueError:
-        return None
-    max_length = len(map) - position.y
-    # print(f"position={str(position)}")
-    vertical_cells = follow_direction(map, position + Vector(-1, 0), 2, max_length - 2)
-    # print(f"{vertical_cells=}")
-    try:
-        length = vertical_cells.index("#")
-    except ValueError:
-        return None
-    return width, length
-
-
-def possible_loop_with(map: list[list], position: Vector):
-    dimensions = width_and_lenth_candidates(map, position)
-    if dimensions:
-        width, length = dimensions
-    else:
-        return False
-    # print(f"position={str(position)} {width=} {length=}")
-    hashtags = [
-        position,
-        position + Vector(width, 1),
-        position + Vector(width - 1, length + 1),
-        position + Vector(-1, length),
-    ]
-
-    for corner in hashtags[1:]:
-        if corner.index(map) != "#":
-            return False
-
-    circuit = (
-        follow_direction(map, hashtags[0] + Vector(0, 1), 0, width - 1)
-        + follow_direction(map, hashtags[1] + Vector(-1, 0), 2, length - 1)
-        + follow_direction(map, hashtags[2] + Vector(0, -1), 4, width - 1)
-        + follow_direction(map, hashtags[3] + Vector(1, 0), 6, length - 1)
-    )
-    if "#" in circuit:
-        return False
-    return True
-
-
-def task_2():
-    map = get_matrix("input/6.txt")
+def task_2(map=get_matrix("input/6.txt")):
+    guard_positions = places_visited(map)
+    del guard_positions[str(get_start_pos(map))]
     loop_positions = 0
-    for y, row in enumerate(map[:-2]):
-        for x, _ in enumerate(row[1:-1]):
-            # loop_positions += check_for_loop(map, Vector(x, y))
-            # print(x, y)
-            loop_positions += possible_loop_with(map, Vector(x + 1, y))
+    for position in list(guard_positions):
+        position = str_to_Vector(position)
+        modified_map = deepcopy(map)
+        position.set_value(modified_map, "#")
+        if places_visited(modified_map) == "periodic":
+            loop_positions += 1
     return loop_positions
-
-
-if __name__ == "__main__":
-    print(task_2())
-
-# new plan:
-# loop through every position visited by the guard
-# place a hashtag in this position.
-# if the guard revisits the same two squares in a row then this position created a loop
