@@ -9,6 +9,9 @@ class Vector:
     def __sub__(self, other):
         return Vector(self.x - other.x, self.y - other.y)
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     @property
     def is_negative(self):
         return self.x < 0 or self.y < 0
@@ -17,14 +20,14 @@ class Vector:
         return matrix[self.y][self.x]
 
 
-def read_file(filepath="input/4.txt"):
+def read_file(filepath):
     with open(filepath, "r") as f:
         yield from f
 
 
-def get_matrix():
+def get_matrix(filepath="input/4.txt"):
     matrix = []
-    for line in read_file():
+    for line in read_file(filepath):
         matrix.append(list(line))
     return matrix
 
