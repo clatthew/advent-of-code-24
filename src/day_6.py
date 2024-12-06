@@ -23,14 +23,14 @@ def get_next_position(
     return current_position + unit_vectors[current_direction], current_direction
 
 
-def task_1():
+def places_visited():
     map = get_matrix("input/6.txt")
     current_position: Vector = get_start_pos(map)
     current_direction: int = 3
-    no_places_visited: int = -1
+    places_visited: int = []
     while True:
         if current_position.index(map) != "X":
-            no_places_visited += 1
+            places_visited.append(current_position)
             current_position.set_value(map, "X")
         try:
             current_position, current_direction = get_next_position(
@@ -38,7 +38,11 @@ def task_1():
             )
         except IndexError:
             break
-    return no_places_visited
+    return places_visited[1:]
+
+
+def task_1():
+    return len(places_visited())
 
 
 def width_and_lenth_candidates(map: list[list], position: Vector):
@@ -101,3 +105,8 @@ def task_2():
 
 if __name__ == "__main__":
     print(task_2())
+
+# new plan:
+# loop through every position visited by the guard
+# place a hashtag in this position.
+# if the guard revisits the same two squares in a row then this position created a loop
