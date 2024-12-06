@@ -16,7 +16,9 @@ def get_start_pos(map: list[list]) -> Vector | None:
             return Vector(row.index("^"), y)
 
 
-def next_cell(map: list[list], current_position: Vector, current_direction: int) -> str:
+def forward_cell_content(
+    map: list[list], current_position: Vector, current_direction: int
+) -> str:
     next_cell = current_position + unit_vectors[current_direction]
     if next_cell.is_inside_of(map):
         return next_cell.index(map)
@@ -26,7 +28,7 @@ def next_cell(map: list[list], current_position: Vector, current_direction: int)
 def get_next_position(
     map: list[list], current_position: Vector, current_direction: int
 ) -> Vector:
-    while next_cell(map, current_position, current_direction) == "#":
+    while forward_cell_content(map, current_position, current_direction) == "#":
         current_direction = (current_direction + 1) % 4
     return current_position + unit_vectors[current_direction], current_direction
 
