@@ -5,11 +5,10 @@ unit_vectors = {
 }
 
 
-def get_start_pos(map: list[list]):
+def get_start_pos(map: list[list]) -> Vector | None:
     for y, row in enumerate(map):
-        for x, cell in enumerate(row):
-            if cell == "^":
-                return Vector(x, y)
+        if "^" in row:
+            return Vector(row.index("^"), y)
 
 
 def next_cell(map: list[list], current_position: Vector, current_direction: int) -> str:
@@ -26,12 +25,12 @@ def get_next_position(
 
 def task_1():
     map = get_matrix("input/6.txt")
-    current_position = get_start_pos(map)
-    current_direction = 3
-    places_visited = -1
+    current_position: Vector = get_start_pos(map)
+    current_direction: int = 3
+    no_places_visited: int = -1
     while True:
         if current_position.index(map) != "X":
-            places_visited += 1
+            no_places_visited += 1
             current_position.set_value(map, "X")
         try:
             current_position, current_direction = get_next_position(
@@ -39,7 +38,7 @@ def task_1():
             )
         except IndexError:
             break
-    return places_visited
+    return no_places_visited
 
 
 def task_2():
