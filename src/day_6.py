@@ -66,9 +66,8 @@ def task_2(map: list[list] = get_matrix("input/6.txt")):
     del guard_positions[get_start_pos(map).as_tuple]
     loop_positions = 0
     for position in guard_positions:
-        position = Vector(*position)
         modified_map = deepcopy(map)
-        position.set_value(modified_map, "#")
+        Vector(*position).set_value(modified_map, "#")
         try:
             places_visited(modified_map)
         except Periodic:
