@@ -25,6 +25,18 @@ class Vector:
     def index(self, matrix: list[list]):
         return matrix[self.y][self.x]
 
+    def is_inside_of(self, matrix: list[list]):
+        if self.is_negative:
+            return False
+        if self.y > len(matrix):
+            return False
+        if self.x > len(matrix[0]):
+            return False
+        return True
+
+    def set_value(self, matrix: list[list], new_value):
+        matrix[self.y][self.x] = new_value
+
 
 unit_vectors = {
     0: Vector(1, 0),
