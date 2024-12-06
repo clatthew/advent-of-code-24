@@ -6,9 +6,8 @@ unit_vectors = {
 }
 
 
-def str_to_Vector(vector: str):
-    vector_list = [int(i) for i in vector[1:-1].split(",")]
-    return Vector(vector_list[0], vector_list[1])
+class Periodic(Exception):
+    pass
 
 
 def get_start_pos(map: list[list]) -> Vector | None:
@@ -41,7 +40,6 @@ def places_visited(map: list[list]) -> dict:
     current_direction: int = 3
     places_visited = {}
     steps = 0
-    periodic = False
     while current_position.is_inside_of(map):
         try:
             current_position, current_direction = get_next_position(
@@ -49,31 +47,30 @@ def places_visited(map: list[list]) -> dict:
             )
         except IndexError:
             break
-        if str(current_position) not in places_visited:
-            places_visited[str(current_position)] = [steps]
+        if current_position.as_tuple not in places_visited:
+            places_visited[current_position.as_tuple] = [steps]
         else:
-            places_visited[str(current_position)].append(steps)
-            if is_periodic(places_visited[str(current_position)]):
-                periodic = True
-                break
+            places_visited[current_position.as_tuple].append(steps)
+            if is_periodic(places_visited[current_position.as_tuple]):
+                raise Periodic
         steps += 1
-    if periodic:
-        return "periodic"
     return places_visited
 
 
-def task_1(map=get_matrix("input/6.txt")):
+def task_1(map: list[list] = get_matrix("input/6.txt")):
     return len(places_visited(map)) - 1
 
 
-def task_2(map=get_matrix("input/6.txt")):
+def task_2(map: list[list] = get_matrix("input/6.txt")):
     guard_positions = places_visited(map)
-    del guard_positions[str(get_start_pos(map))]
+    del guard_positions[get_start_pos(map).as_tuple]
     loop_positions = 0
-    for position in list(guard_positions):
-        position = str_to_Vector(position)
+    for position in guard_positions:
+        position = Vector(*position)
         modified_map = deepcopy(map)
         position.set_value(modified_map, "#")
-        if places_visited(modified_map) == "periodic":
+        try:
+            places_visited(modified_map)
+        except Periodic:
             loop_positions += 1
     return loop_positions
