@@ -15,7 +15,7 @@ def rep(n: int, chunk_size: int, base: int) -> str:
     return rep
 
 
-def reps(length: int, base=2) -> list[str]:
+def reps(length: int, base: int = 2) -> list[str]:
     return [rep(i, length, base) for i in range(base**length)]
 
 
