@@ -1,4 +1,4 @@
-def prepare_input(filepath: str = "input/7.txt") -> dict:
+def prepare_input(filepath: str = "input/7.txt") -> dict[int, list[int]]:
     numbers = {}
     with open(filepath) as f:
         for line in f:
@@ -15,7 +15,7 @@ def rep(n: int, chunk_size: int, base: int) -> str:
     return rep
 
 
-def reps(length: int, base: int = 2) -> list[str]:
+def reps(length: int, base: int = 2) -> list[list[int]]:
     return [rep(i, length, base) for i in range(base**length)]
 
 
@@ -32,16 +32,15 @@ def combine(components: list[int], permutation: list[int]) -> int:
     return result
 
 
-def can_be_true(total: int, components: list[int], base: int) -> bool:
+def can_be_true(total: int, components: list[int], base: int) -> int:
     for permutation in reps(len(components) - 1, base):
         if combine(components, permutation) == total:
-            return True
-    return False
+            return total
+    return 0
 
 
-def tasks(equations: dict = prepare_input(), base: int = 2) -> int:
+def tasks(equations: dict[int, list[int]] = prepare_input(), base: int = 2) -> int:
     current_result = 0
     for total, components in equations.items():
-        if can_be_true(total, components, base):
-            current_result += total
+        current_result += can_be_true(total, components, base)
     return current_result
