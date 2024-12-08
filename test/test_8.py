@@ -1,11 +1,5 @@
 from pytest import mark
-from src.day_8 import (
-    prepare_input,
-    find_antinodes,
-    tasks,
-    antinodes_of_pair_1,
-    antinodes_of_pair_2,
-)
+from src.day_8 import prepare_input, find_antinodes, tasks, antinodes_of_pair_1
 from src.day_4 import Vector
 
 
