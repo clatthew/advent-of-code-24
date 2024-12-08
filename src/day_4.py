@@ -40,13 +40,16 @@ class Vector:
 
     def is_enclosed_by(self, top_left: Self, bottom_right: Self) -> bool:
         for component in ["x", "y"]:
-            if (
-                not getattr(top_left, component)
+            if not (
+                getattr(top_left, component)
                 <= getattr(self, component)
                 <= getattr(bottom_right, component)
             ):
                 return False
         return True
+
+    def __mul__(self, scalar: int) -> Self:
+        return Vector(scalar * self.x, scalar * self.y)
 
     def set_value(self, matrix: list[list], new_value):
         matrix[self.y][self.x] = new_value
