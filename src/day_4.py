@@ -38,6 +38,16 @@ class Vector:
             return False
         return True
 
+    def is_enclosed_by(self, top_left: Self, bottom_right: Self) -> bool:
+        for component in ["x", "y"]:
+            if (
+                not getattr(top_left, component)
+                <= getattr(self, component)
+                <= getattr(bottom_right, component)
+            ):
+                return False
+        return True
+
     def set_value(self, matrix: list[list], new_value):
         matrix[self.y][self.x] = new_value
 
