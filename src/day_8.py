@@ -16,10 +16,15 @@ def prepare_input(filepath: str) -> tuple[Vector, dict[str, list[Vector]]]:
     return bottom_corner, antennae
 
 
+def relative_vector_of(location_1: Vector, location_2: Vector) -> Vector:
+    """return the vector pointing from location_2 to location_1"""
+    return location_1 - location_2
+
+
 def antinodes_of_pair_1(
     location_1: Vector, location_2: Vector, bottom_right: Vector
 ) -> list[Vector]:
-    relative_vector = location_1 - location_2
+    relative_vector = relative_vector_of(location_1, location_2)
     candidates = [location_1 + relative_vector, location_2 - relative_vector]
     return [
         location
@@ -31,7 +36,7 @@ def antinodes_of_pair_1(
 def antinodes_of_pair_2(
     location_1: Vector, location_2: Vector, bottom_right: Vector
 ) -> list[Vector]:
-    relative_vector = location_1 - location_2
+    relative_vector = relative_vector_of(location_1, location_2)
     candidates = []
     for direction in [1, -1]:
         position = location_1
