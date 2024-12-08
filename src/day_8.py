@@ -1,5 +1,8 @@
 from src.day_5 import add_to_dict
 from src.day_4 import Vector
+from typing import Callable
+
+TOP_LEFT = Vector(0, 0)
 
 
 def prepare_input(filepath: str) -> tuple[Vector, dict[str, list[Vector]]]:
@@ -13,26 +16,52 @@ def prepare_input(filepath: str) -> tuple[Vector, dict[str, list[Vector]]]:
     return bottom_corner, antennae
 
 
-def find_antinodes(antenna_locations: list[Vector]) -> list[Vector]:
+def antinodes_of_pair_1(
+    location_1: Vector, location_2: Vector, bottom_right: Vector
+) -> list[Vector]:
+    relative_vector = location_1 - location_2
+    candidates = [location_1 + relative_vector, location_2 - relative_vector]
+    return [
+        location
+        for location in candidates
+        if location.is_enclosed_by(TOP_LEFT, bottom_right)
+    ]
+
+
+def antinodes_of_pair_2(
+    location_1: Vector, location_2: Vector, bottom_right: Vector
+) -> list[Vector]:
+    relative_vector = location_1 - location_2
+    candidates = []
+    for direction in [1, -1]:
+        position = location_1
+        while position.is_enclosed_by(TOP_LEFT, bottom_right):
+            candidates.append(position)
+            position += relative_vector * direction
+    return candidates
+
+
+def find_antinodes(
+    antenna_locations: list[Vector],
+    pair_function: Callable[[Vector, Vector, Vector], list[Vector]],
+    bottom_right: Vector,
+) -> list[Vector]:
     antinode_locations = []
     for i, location_1 in enumerate(antenna_locations[:-1]):
         for location_2 in antenna_locations[i + 1 :]:
-            relative_vector = location_1 - location_2
-            antinode_locations += [
-                location_1 + relative_vector,
-                location_2 - relative_vector,
-            ]
+            antinode_locations += pair_function(location_1, location_2, bottom_right)
     return antinode_locations
 
 
-def task_1(filepath: str = "input/8.txt") -> int:
-    bottom_corner, antennae_locations = prepare_input(filepath)
+PAIR_FUNCTIONS = {1: antinodes_of_pair_1, 2: antinodes_of_pair_2}
+
+
+def tasks(filepath: str = "input/8.txt", task: int = 1) -> int:
+    bottom_right, antennae_locations = prepare_input(filepath)
     all_antinode_locations = []
     for _, locations in antennae_locations.items():
-        all_antinode_locations += [
-            location
-            for location in find_antinodes(locations)
-            if location not in all_antinode_locations
-            and location.is_enclosed_by(Vector(0, 0), bottom_corner)
-        ]
+        candidates = find_antinodes(locations, PAIR_FUNCTIONS[task], bottom_right)
+        for location in candidates:
+            if location not in all_antinode_locations:
+                all_antinode_locations.append(location)
     return len(all_antinode_locations)
