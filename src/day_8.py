@@ -39,10 +39,10 @@ def antinodes_of_pair_2(
     relative_vector = relative_vector_of(location_1, location_2)
     candidates = []
     for direction in [1, -1]:
-        position = location_1
-        while position.is_enclosed_by(TOP_LEFT, bottom_right):
-            candidates.append(position)
-            position += relative_vector * direction
+        antinode_position = location_1
+        while antinode_position.is_enclosed_by(TOP_LEFT, bottom_right):
+            candidates.append(antinode_position)
+            antinode_position += relative_vector * direction
     return candidates
 
 
