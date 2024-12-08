@@ -25,10 +25,9 @@ def antinodes_of_pair_1(
     location_1: Vector, location_2: Vector, bottom_right: Vector
 ) -> list[Vector]:
     relative_vector = relative_vector_of(location_1, location_2)
-    candidates = [location_1 + relative_vector, location_2 - relative_vector]
     return [
         location
-        for location in candidates
+        for location in [location_1 + relative_vector, location_2 - relative_vector]
         if location.is_enclosed_by(TOP_LEFT, bottom_right)
     ]
 
