@@ -45,11 +45,11 @@ def places_visited(map: list[list]) -> list[tuple[int, int]]:
         except IndexError:
             return list(visits)
         if current_position.as_tuple not in visits:
-            visits[current_position.as_tuple] = 1
+            visits[current_position.as_tuple] = [current_direction]
         else:
-            visits[current_position.as_tuple] += 1
-            if visits[current_position.as_tuple] > 4:
+            if current_direction in visits[current_position.as_tuple]:
                 raise Periodic
+            visits[current_position.as_tuple].append(current_direction)
 
 
 def task_1(map: list[list] = get_matrix("input/6.txt")) -> int:
