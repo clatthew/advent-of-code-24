@@ -91,11 +91,9 @@ def make_optimisation(
         return uncompressed_data
     uncompressed_data[old_chunk_pos] = len(candidate_chunk)
     uncompressed_data.insert(gap_pos, candidate_chunk)
-    new_empty_len = uncompressed_data[gap_pos + 1] - len(candidate_chunk)
-    if new_empty_len:
-        uncompressed_data[gap_pos + 1] = new_empty_len
-    else:
-        del uncompressed_data[gap_pos + 1]
+    uncompressed_data[gap_pos + 1] = uncompressed_data[gap_pos + 1] - len(
+        candidate_chunk
+    )
     while True:
         compressed_data = merge_adjacents(uncompressed_data)
         if compressed_data == merge_adjacents(compressed_data):
