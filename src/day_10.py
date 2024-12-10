@@ -33,7 +33,6 @@ class Solution:
         summits = []
         for _, direction in unit_vectors.items():
             next_step = position + direction
-            if next_step.is_inside_of(self.map):
-                if position.index(self.map) + 1 == next_step.index(self.map):
-                    summits += self.possible_summits_from(next_step)
+            if position.index(self.map) + 1 == next_step.index(self.map, True):
+                summits += self.possible_summits_from(next_step)
         return summits
