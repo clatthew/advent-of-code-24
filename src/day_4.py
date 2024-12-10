@@ -26,7 +26,10 @@ class Vector:
     def is_negative(self):
         return self.x < 0 or self.y < 0
 
-    def index(self, matrix: list[list]):
+    def index(self, matrix: list[list], strict=False):
+        if strict:
+            if not self.is_inside_of(matrix):
+                return None
         return matrix[self.y][self.x]
 
     def is_inside_of(self, matrix: list[list]):
