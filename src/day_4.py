@@ -32,9 +32,9 @@ class Vector:
     def is_inside_of(self, matrix: list[list]):
         if self.is_negative:
             return False
-        if self.y > len(matrix):
+        if self.y >= len(matrix):
             return False
-        if self.x > len(matrix[0]):
+        if self.x >= len(matrix[0]):
             return False
         return True
 
@@ -75,7 +75,7 @@ def read_file(filepath: str):
 def get_matrix(filepath: str = "input/4.txt"):
     matrix = []
     for line in read_file(filepath):
-        matrix.append(list(line))
+        matrix.append(list(line.strip()))
     return matrix
 
 
