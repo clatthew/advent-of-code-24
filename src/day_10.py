@@ -10,6 +10,12 @@ def remove_duplicates(target_list: list) -> list:
     return new_list
 
 
+def matrix_iterator(matrix: list[list]):
+    for y, row in enumerate(matrix):
+        for x, cell in enumerate(row):
+            yield cell, Vector(x, y)
+
+
 class Solution:
     def __init__(self, filepath: str = "input/10.txt"):
         self.map = [[int(j) for j in i] for i in get_matrix(filepath)]
@@ -17,10 +23,9 @@ class Solution:
     def task(self, task: int = 1) -> int:
         self.task = task
         total_score = 0
-        for y, row in enumerate(self.map):
-            for x, cell in enumerate(row):
-                if not cell:
-                    total_score += self.no_possible_summits_from(Vector(x, y))
+        for cell, position in matrix_iterator(self.map):
+            if not cell:
+                total_score += self.no_possible_summits_from(position)
         return total_score
 
     def no_possible_summits_from(self, position: Vector) -> int:
