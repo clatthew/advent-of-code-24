@@ -1,4 +1,4 @@
-from src.day_4 import get_matrix, Vector
+from src.day_4 import get_matrix, Vector, matrix_iterator
 from src.day_6 import unit_vectors
 
 
@@ -8,12 +8,6 @@ def remove_duplicates(target_list: list) -> list:
         if item not in new_list:
             new_list.append(item)
     return new_list
-
-
-def matrix_iterator(matrix: list[list]):
-    for y, row in enumerate(matrix):
-        for x, cell in enumerate(row):
-            yield cell, Vector(x, y)
 
 
 class Solution:
