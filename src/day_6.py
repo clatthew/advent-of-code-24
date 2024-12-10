@@ -53,7 +53,7 @@ def places_visited(map: list[list]) -> list[tuple[int, int]]:
 
 
 def task_1(map: list[list] = get_matrix("input/6.txt")) -> int:
-    return len(places_visited(map)) - 1
+    return len(places_visited(map))
 
 
 def task_2(map: list[list] = get_matrix("input/6.txt")) -> int:
