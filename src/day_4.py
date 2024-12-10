@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, Iterator, Any
 
 
 class Vector:
@@ -72,11 +72,17 @@ def read_file(filepath: str):
         yield from f
 
 
-def get_matrix(filepath: str = "input/4.txt"):
+def get_matrix(filepath):
     matrix = []
     for line in read_file(filepath):
         matrix.append(list(line.strip()))
     return matrix
+
+
+def matrix_iterator(matrix: list[list]) -> Iterator[tuple[Any, Vector]]:
+    for y, row in enumerate(matrix):
+        for x, cell in enumerate(row):
+            yield cell, Vector(x, y)
 
 
 def follow_direction(
@@ -104,8 +110,8 @@ def search_word_from_letter(
     return count
 
 
-def task_1():
-    matrix = get_matrix()
+def task_1(filepath: str = "input/4.txt"):
+    matrix = get_matrix(filepath)
     xmas_count = 0
     for y, row in enumerate(matrix):
         for x, letter in enumerate(row):
@@ -121,8 +127,10 @@ def find_cross(
     skews = {0: [Vector(0, 1), Vector(1, 0)], 1: [Vector(1, -1), Vector(1, 1)]}
     try:
         for axis in skews[skew]:
-            indices = [start_point - axis, start_point, start_point + axis]
-            word = "".join([index.index(matrix) for index in indices])
+            letters = [start_point - axis, start_point, start_point + axis]
+            if not all([letter.is_inside_of(matrix) for letter in letters]):
+                return False
+            word = "".join([letter.index(matrix) for letter in letters])
             if word not in [target, target[::-1]]:
                 return False
         return True
@@ -130,11 +138,10 @@ def find_cross(
         return False
 
 
-def task_2():
-    matrix = get_matrix()
+def task_2(filepath: str = "input/4.txt"):
+    matrix = get_matrix(filepath)
     x_mas_count = 0
-    for y, row in enumerate(matrix):
-        for x, letter in enumerate(row):
-            if letter == "A":
-                x_mas_count += find_cross(matrix, Vector(x, y))
+    for letter, position in matrix_iterator(matrix):
+        if letter == "A":
+            x_mas_count += find_cross(matrix, position)
     return x_mas_count

@@ -71,11 +71,16 @@ def test_2(direction, expected):
     assert result == expected
 
 
-@mark.it("Solution to task 1 returns the correct answer")
+@mark.it("correct answer to task 1")
 def test_3():
     assert task_1() == 2344
 
 
-@mark.it("Solution to task 2 returns the correct answer")
-def test_4():
+@mark.it("correct answer to task 2 with sample data")
+def test_5():
+    assert task_2("test/test_data/4.txt") == 9
+
+
+@mark.it("correct answer to task 2")
+def test_6():
     assert task_2() == 1815
