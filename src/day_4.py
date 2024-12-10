@@ -23,16 +23,16 @@ class Vector:
         return self.as_tuple == other.as_tuple
 
     @property
-    def is_negative(self):
+    def is_negative(self) -> bool:
         return self.x < 0 or self.y < 0
 
-    def index(self, matrix: list[list], strict=False):
+    def index(self, matrix: list[list], strict: bool = False):
         if strict:
             if not self.is_inside_of(matrix):
                 return None
         return matrix[self.y][self.x]
 
-    def is_inside_of(self, matrix: list[list]):
+    def is_inside_of(self, matrix: list[list]) -> bool:
         if self.is_negative:
             return False
         if self.y >= len(matrix):
@@ -70,12 +70,12 @@ unit_vectors = {
 }
 
 
-def read_file(filepath: str):
+def read_file(filepath: str) -> Iterator[str]:
     with open(filepath, "r") as f:
         yield from f
 
 
-def get_matrix(filepath):
+def get_matrix(filepath: str) -> list[list]:
     matrix = []
     for line in read_file(filepath):
         matrix.append(list(line.strip()))
@@ -105,7 +105,7 @@ def follow_direction(
 
 def search_word_from_letter(
     matrix: list[list[str]], start_point: Vector, target: str = "XMAS"
-):
+) -> int:
     count = 0
     for direction in range(8):
         if follow_direction(matrix, start_point, direction) == target:
@@ -113,7 +113,7 @@ def search_word_from_letter(
     return count
 
 
-def task_1(filepath: str = "input/4.txt"):
+def task_1(filepath: str = "input/4.txt") -> int:
     matrix = get_matrix(filepath)
     xmas_count = 0
     for y, row in enumerate(matrix):
@@ -125,7 +125,7 @@ def task_1(filepath: str = "input/4.txt"):
 
 
 def find_cross(
-    matrix: list[list[str]], start_point: Vector, skew: int = 1, target="MAS"
+    matrix: list[list[str]], start_point: Vector, skew: int = 1, target: str = "MAS"
 ) -> str:
     skews = {0: [Vector(0, 1), Vector(1, 0)], 1: [Vector(1, -1), Vector(1, 1)]}
     try:
@@ -141,7 +141,7 @@ def find_cross(
         return False
 
 
-def task_2(filepath: str = "input/4.txt"):
+def task_2(filepath: str = "input/4.txt") -> int:
     matrix = get_matrix(filepath)
     x_mas_count = 0
     for letter, position in matrix_iterator(matrix):
