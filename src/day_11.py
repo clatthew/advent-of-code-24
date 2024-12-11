@@ -1,5 +1,5 @@
 class Solution:
-    def __init__(self, filepath="input/11.txt"):
+    def __init__(self, filepath: str = "input/11.txt"):
         with open(filepath) as f:
             self.stones = [int(i) for i in f.read().split(" ")]
         self.cache = {}
@@ -16,24 +16,23 @@ class Solution:
             new_stones.append(2024 * stone)
         return new_stones
 
-    def no_stones_after_blinks(self, stone: int, blinks: int) -> int:
+    def blink_single_stone(self, stone: int, blinks: int) -> int:
         if blinks == 1:
             return len(self.blink(stone))
-        return self.no_stones_with_cache(self.blink(stone), blinks - 1)
+        return self.blink_all_stones(self.blink(stone), blinks - 1)
 
-    def no_stones_with_cache(self, stones: list[int], blinks: int):
+    def blink_all_stones(self, stones: list[int] = [], blinks: int = 25) -> int:
+        if not stones:
+            stones = self.stones
         total_stones = 0
         for stone in stones:
             try:
                 total_stones += self.cache[stone][blinks]
             except KeyError:
-                result = self.no_stones_after_blinks(stone, blinks)
+                result = self.blink_single_stone(stone, blinks)
                 self.update_cache(stone, blinks, result)
                 total_stones += result
         return total_stones
-
-    def task(self, blinks: int = 25) -> int:
-        return self.no_stones_with_cache(self.stones, blinks)
 
     def update_cache(self, stone: int, blinks: int, resulting_stones: int):
         if stone not in self.cache:
