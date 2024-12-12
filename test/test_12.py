@@ -2,7 +2,6 @@ from pytest import mark, fixture
 from src.day_12 import Solution
 from src.day_4 import get_matrix, Vector
 from copy import deepcopy
-from pprint import pprint
 
 
 class Testregion_containing:
@@ -147,18 +146,18 @@ class Testtasks:
         result = sum([region.cost_1 for region in solution.regions])
         assert result == expected
 
-    # @mark.skip
-    @mark.parametrize("sample_data,expected", [(1, 80), (2, 436), (3, 1206)])
+    @mark.parametrize(
+        "sample_data,expected",
+        [(1, 80), (2, 436), (3, 1206)],
+    )
     @mark.it("correct solution to task 2 with sample data")
     def test_3(self, sample_data, expected):
         solution = Solution(get_matrix(f"test/test_data/12_{sample_data}.txt"))
-        # print([[i.as_tuple for i in j.plots] for j in solution.regions])
         result = sum([region.cost_2 for region in solution.regions])
         assert result == expected
 
-    @mark.skip
     @mark.it("correct solution to task 2")
     def test_4(self, solution):
-        expected = 1464678
+        expected = 877492
         result = sum([region.cost_2 for region in solution.regions])
         assert result == expected

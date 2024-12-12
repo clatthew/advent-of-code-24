@@ -1,7 +1,5 @@
 from src.day_4 import Vector, matrix_iterator
 from src.day_6 import unit_vectors
-from src.day_10 import remove_duplicates
-from copy import copy
 
 
 class Region:
@@ -22,9 +20,6 @@ class Region:
                     perimiter += 1
         return perimiter
 
-    # goes wrong with a single concave piece
-    # need categorisation algorithm where each group only contains a straight line of points
-    # write an algorithm that can trace around the outside of the shape?
     @property
     def no_of_sides(self) -> int:
         adjacents: list[Vector] = []
@@ -33,25 +28,46 @@ class Region:
                 neighbour = plot + direction
                 if neighbour not in adjacents + self.plots:
                     adjacents.append(neighbour)
-        print(
-            f"region: {self.letter} adjacents: {[i.as_tuple for i in sorted(adjacents, key=lambda x: x.y)]}"
-        )
-        groups = []
-        for new_adj in sort_list_of_vectors(adjacents):
-            groups = categorise(groups, new_adj)
-        no_of_sides = 0
-        for group in groups:
-            group_sides = []
-            for vector in group:
-                for i, direction in unit_vectors.items():
-                    if vector + direction in self.plots:
-                        group_sides.append(i)
-            no_of_sides += len(remove_duplicates(group_sides))
-            print(
-                f"group: {[i.as_tuple for i in group]} sides: {len(remove_duplicates(group_sides))}"
+        direction_changes = 0
+        while adjacents:
+            start_position = adjacents[0]
+            for i, direction in unit_vectors.items():
+                if start_position + direction in self.plots:
+                    start_direction = (i + 3) % 4
+            adjacents_in_loop = [start_position]
+            directions_in_loop = [start_direction]
+            next_position, next_direction = self.next_step(
+                start_position, start_direction
             )
-        print(f"region: {self.letter} sides: {no_of_sides}")
-        return no_of_sides
+            while (next_position, next_direction) != (start_position, start_direction):
+                adjacents_in_loop.append(next_position)
+                directions_in_loop.append(next_direction)
+                next_position, next_direction = self.next_step(
+                    next_position, next_direction
+                )
+            adjacents_in_loop.append(next_position)
+            directions_in_loop.append(next_direction)
+            for adjacent in adjacents_in_loop:
+                try:
+                    adjacents.remove(adjacent)
+                except ValueError:
+                    pass
+            for i, j in zip(directions_in_loop[:-1], directions_in_loop[1:]):
+                if i != j:
+                    direction_changes += 1
+        return direction_changes
+
+    def next_step(self, position: Vector, direction: int) -> tuple[Vector, int]:
+        if position + unit_vectors[direction] in self.plots:
+            return position, (direction + 3) % 4
+        if (
+            position + unit_vectors[direction] + unit_vectors[(direction + 1) % 4]
+            in self.plots
+        ):
+            return position + unit_vectors[direction], direction
+        return position + unit_vectors[direction] + unit_vectors[(direction + 1) % 4], (
+            direction + 1
+        ) % 4
 
     @property
     def cost_1(self):
@@ -60,40 +76,6 @@ class Region:
     @property
     def cost_2(self):
         return self.no_of_sides * self.area
-
-
-def categorise(groups: list[list[Vector]], adjacent: Vector):
-    for group in groups:
-        if len(group) > 1:
-            if adjacent == group[-1] * 2 - group[-2]:
-                group.append(adjacent)
-                return groups
-        else:
-            if adjacent.is_adjacent_to(group[0]):
-                group.append(adjacent)
-                return groups
-    groups.append([adjacent])
-    return groups
-
-
-def sort_list_of_vectors(vector_list: list[Vector]) -> list[Vector]:
-    # print(f"original: {[i.as_tuple for i in vector_list]}")
-    for i, _ in enumerate(vector_list):
-        for j, _ in enumerate(vector_list[i + 1 :], i + 1):
-            if compare_vectors(vector_list[i], vector_list[j]):
-                placeholder = vector_list[j]
-                vector_list[j] = vector_list[i]
-                vector_list[i] = placeholder
-    # print(f"sorted  : {[i.as_tuple for i in vector_list]}")
-    return vector_list
-
-
-def compare_vectors(a: Vector, b: Vector) -> bool:
-    if a.x > b.x:
-        return True
-    elif a.x == b.x:
-        return a.y > b.y
-    return False
 
 
 class Solution:
