@@ -57,6 +57,12 @@ class Vector:
     def set_value(self, matrix: list[list], new_value):
         matrix[self.y][self.x] = new_value
 
+    def is_adjacent_to(self, other: Self) -> bool:
+        for direction in [value for key, value in unit_vectors.items() if key % 2 == 0]:
+            if self + direction == other:
+                return True
+        return False
+
 
 unit_vectors = {
     0: Vector(1, 0),
