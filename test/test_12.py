@@ -139,7 +139,6 @@ class Testtasks:
         result = sum([region.cost_1 for region in solution.regions])
         assert result == expected
 
-    @mark.skip
     @mark.it("correct solution to task 1")
     def test_2(self, solution):
         expected = 1464678
