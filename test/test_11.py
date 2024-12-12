@@ -36,5 +36,5 @@ class Testtasks:
     @mark.it("solution to task 2")
     def test_3(self, solution: Solution):
         result = solution.blink_all_stones(blinks=75)
-        expected = 236302670835517
+        expected = 236_302_670_835_517
         assert result == expected
