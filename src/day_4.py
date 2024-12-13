@@ -122,11 +122,9 @@ def search_word_from_letter(
 def task_1(filepath: str = "input/4.txt") -> int:
     matrix = get_matrix(filepath)
     xmas_count = 0
-    for y, row in enumerate(matrix):
-        for x, letter in enumerate(row):
-            if letter == "X":
-                start_point = Vector(x, y)
-                xmas_count += search_word_from_letter(matrix, start_point)
+    for letter, start_point in matrix_iterator(matrix):
+        if letter == "X":
+            xmas_count += search_word_from_letter(matrix, start_point)
     return xmas_count
 
 
